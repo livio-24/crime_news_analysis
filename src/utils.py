@@ -4,7 +4,7 @@ from collections import Counter
 import nltk
 from nltk.tokenize import sent_tokenize
 
-nltk.download("punkt_tab")
+nltk.download("punkt_tab", quiet=True)
 
 
 def split_sentences(articles: list[str]) -> tuple[list[int], list[str]]:
@@ -53,6 +53,21 @@ def group_topics_by_doc(
     return news_topics
     # Merge with the original dataset
     # df["topics"] = df.index.map(article_topics)
+
+
+def group_sent_by_topics(
+    sentences: list[str], topics: list[str], topics_names: dict[int, str]
+) -> pd.DataFrame:
+    """
+    group sentences by topics
+    """
+    df = pd.DataFrame(
+        {"sentences": sentences, "topics": [topics_names[topic] for topic in topics]}
+    )
+
+    grouped_df = df.groupby("topics")["sentences"].apply(list).reset_index()
+
+    return grouped_df
 
 
 def n_topic_per_doc(topics: list[list[str]]) -> pd.DataFrame:
